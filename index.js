@@ -191,7 +191,7 @@ rp(url)
 
 function Timer(type, msg){
   msg2 = msg.content
-  if ((type == 't') || (type == 'x') || (type == 'm') || (type == 'f') || (type == 'j') || (type == 'm')){
+  if ((type == 't') || (type == 'x') || (type == 'm')){
     reply = msg2.slice(msg2.indexOf(' '),)
   }
   if (type == 'w'){
@@ -211,7 +211,7 @@ function Timer(type, msg){
     author = `<@${process.env.X}>`
   }
   if (type == 'm'){
-    author = `<@${process.env.M2}>`
+    author = `<@${process.env.M}>`
   }
   var response = author + reply
 
@@ -526,7 +526,7 @@ client.on('message', msg => {
     setTimeout(function(){su = 0}, 3600000)
   }
   if (msg2.includes('no') && msg.author == process.env.X && su == 0) {
-    if (Math.random() > 0.99) {
+    if (Math.random() > 0.5) {
     msg.channel.send("Yes");
     }
   }
@@ -603,12 +603,16 @@ client.on('message', msg => {
 
   if (msg2.includes('~weather') && !msg.author.bot) {
     postcode = msg2.slice(msg2.indexOf('~weather')+9,);
-    if (postcode)
+    if (postcode == "anlight" || postcode == "deliac" || postcode == "larion" || postcode == "torvalain" || postcode == "veront")
+      {msg.channel.send(Veront.Veather(postcode,0))}
+    else if (postcode)
       {Url = 'https://www.bbc.co.uk/weather/' + postcode, Reply3(msg,Url,postcode)}
     else if(msg.author == process.env.X)
         {Place = 'Headingley', Url = 'https://www.bbc.co.uk/weather/6695619', Reply3(msg,Url,Place)}
     else if(msg.author == process.env.M)
         {Place = 'Swansea', Url = 'https://www.bbc.co.uk/weather/2636432', Reply3(msg,Url,Place)}
+    else if(msg.author == process.env.W)
+        {Place = 'Boston', Url = 'https://www.bbc.co.uk/weather/4930956', Reply3(msg,Url,Place)}
     else {Place = 'South Kensington', Url = 'https://www.bbc.co.uk/weather/2637395', Reply3(msg,Url,Place)}
   }
 
@@ -622,6 +626,8 @@ client.on('message', msg => {
         {Place = 'Headingley', Url = 'https://www.bbc.co.uk/weather/6695619', Reply30(msg,Url,Place)}
     else if(msg.author == process.env.M)
         {Place = 'Swansea', Url = 'https://www.bbc.co.uk/weather/2636432', Reply30(msg,Url,Place)}
+    else if(msg.author == process.env.W)
+        {Place = 'Boston', Url = 'https://www.bbc.co.uk/weather/4930956', Reply30(msg,Url,Place)}
     else {Place = 'South Kensington', Url = 'https://www.bbc.co.uk/weather/2637395', Reply30(msg,Url,Place)}
   }
 
@@ -679,8 +685,10 @@ client.on('message', msg => {
   if (msg2.includes('todo list') || msg2.includes("l-") || msg2.includes("l+") || msg2.includes("todone list") || msg2.includes("lx") || msg2.includes("l#")) {
     if (msg.author == process.env.X)
         {file = './xlist.txt', colour = '#00ccff', nom = "Matthew", file2 = './xlist2.txt'}
-    if (msg.author == process.env.M2)
+    if (msg.author == process.env.M)
         {file = './mlist.txt', colour = '#55ff00', nom = "Matthew", file2 = './mlist2.txt'}
+    if (msg.author == process.env.W)
+        {file = './wlist.txt', colour = '#ffd050', nom = "Walter", file2 = './wlist2.txt'}
     if (msg2.includes('todo list') && !msg.author.bot){
       reply = List.listReturn(file, colour, nom);
       msg.channel.send(reply);
@@ -924,6 +932,7 @@ client.once('ready', async () => {
       if ((date.getUTCHours() === 0) && date.getMinutes() === 0){
         List.listWipe(channel6, `./xlist2.txt`, `#00ccff`, `Matthew`, 1);
         List.listWipe(channel6, `./mlist2.txt`, `#ff0066`, `Matthew`, 2);
+        List.listWipe(channel6, `./wlist2.txt`, `#ffd050`, `Walter`, 2);
       }
 
     }, 60 * 1000);

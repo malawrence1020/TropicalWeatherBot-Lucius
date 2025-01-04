@@ -55,31 +55,6 @@ async def on_message(msg):
         await msg.channel.send('You go away')
     if 'humans' in msg2 and not msg.author.bot:
         await msg.channel.send('Kill all humans! (except Fry)')
-    if 'carrot' in msg2 and not msg.author.bot:
-        await msg.channel.send('I showed you my carrot please respond',
-                               file=discord.File('./Images/Ripley.jpg'))
-        await msg.add_reaction('🥕')
-    if ('round' in msg2 or 'spherical' in msg2) and (
-            msg.author.id == int(os.getenv('F')) or
-            msg.author.id == int(os.getenv('E'))):
-        await msg.channel.send(file=discord.File('./Images/Round.jpg'))
-    if ("here's johnny" in msg2 or 'jailbreak' in msg2) and (
-            msg.author.id == int(os.getenv('F')) or
-            msg.author.id == int(os.getenv('E'))):
-        await msg.channel.send(file=discord.File('./Images/Jailbreak.jpg'))
-    if "material girl" in msg2 and (msg.author.id == int(os.getenv('F')) or
-                                    msg.author.id == int(os.getenv('E'))):
-        await msg.channel.send(file=discord.File('./Images/Material Girl.jpg'))
-    if "happy birthday" in msg2 and (msg.author.id == int(os.getenv('F')) or
-                                     msg.author.id == int(os.getenv('E'))):
-        await msg.channel.send(file=discord.File(
-            './Images/Happy Birthday.jpg'))
-    if "cleaning" in msg2 and (msg.author.id == int(os.getenv('F')) or
-                               msg.author.id == int(os.getenv('E'))):
-        await msg.channel.send(file=discord.File('./Images/Cleaning.jpg'))
-    if "tits" in msg2 and (msg.author.id == int(os.getenv('F')) or
-                           msg.author.id == int(os.getenv('E'))):
-        await msg.channel.send(file=discord.File('./Images/Rolo.jpg'))
     if 'no' in msg2 and msg.author.id == int(os.getenv('X')):
         rand1 = random.random()
         if rand1 > 0.8:

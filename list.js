@@ -8,7 +8,7 @@ module.exports = {
     var textByLine = text.split('\n')
     textByLine.pop()
 
-    for (i in textByLine){textByLine[i] = `${i}: ${textByLine[i]}`}
+    for (i in textByLine){textByLine[i] = `${i}. ${textByLine[i]}`}
     //console.log(textByLine)
 
     const TodoEmbed = new Discord.MessageEmbed()
@@ -39,7 +39,7 @@ module.exports = {
     
 
   listDel : function (file, num, file2) {
-
+    num = num-1
     var text = fs.readFileSync(file).toString('utf-8')
     var textByLine = text.split('\n')
     if (num < textByLine.length-1){
@@ -67,7 +67,7 @@ module.exports = {
     
 
   listEdit : function (file, num, message) {
-
+    num = num-1
     var text = fs.readFileSync(file).toString('utf-8')
     var textByLine = text.split('\n')
     if (num < textByLine.length-1){
