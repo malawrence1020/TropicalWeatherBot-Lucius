@@ -27,7 +27,12 @@ var lines = {
   victoria: ['Victoria Line','line-lul-victoria-','#00a0e2'],
   waterloo: ['Waterloo & City Line','line-lul-waterloo-city-','#93ceba'],
   dlr: ['DLR','line-dlr-dlr-','#00afad'],
-  overground: ['Overground','line-raillo-overground-','#ef7b10'],
+  lioness: ['Lioness Line','line-raillo-lioness-','#ef7b10'],
+  mildmay: ['Mildmay Line','line-raillo-mildmay-','#ef7b10'],
+  windrush: ['Windrush Line','line-raillo-windrush-','#ef7b10'],
+  weaver: ['Weaver Line','line-raillo-weaver-','#ef7b10'],
+  suffragette: ['Suffragette Line','line-raillo-suffragette-','#ef7b10'],
+  liberty: ['Liberty Line','line-raillo-liberty-','#ef7b10'],
   tram: ['Tram','line-tram-tram-','#00bd19'],
   elizabeth: ['Elizabeth Line','line-elizabeth-','#9364cc']}
 
@@ -423,16 +428,18 @@ function cheerioM(channel,tim) {
 function tubeStatus(channel, line) {
   rp('https://tfl.gov.uk/tube-dlr-overground/status')
   .then(function(html) {
-    const $ = cheerio.load('.rainbow-list .interactive');
+    const $ = cheerio.load('.rainbow-list');
     //var data0 = $('.number-link', html).eq(0).text().replace(/\n/g, " ").replace(/\s\s+/g, " ");
     var data0 = $(`#${lines[line][1]}content`, html).text().replace(/\n/g, " ");
     var data1 = $(`.${line} .service-name`, html).text().replace(/\n/g, " ");
     var data2 = $(`.${line} .disruption-summary`, html).text().replace(/\n/g, " ");
     var data0a = data0.slice(0,data0.indexOf("Replan your journey"));
+    if (data1){var data0b = `${data1}: ${data2}\n\n${data0a}`}
+    else {var data0b = `${lines[line][0]}: No data. [Check TfL Website](https://tfl.gov.uk/tube-dlr-overground/status/)`}
     const TubeEmbed = new Discord.MessageEmbed()
     .setColor(`${lines[line][2]}`)
     .setAuthor(`Lucius: ${lines[line][0]} Update`, 'https://static.independent.co.uk/s3fs-public/thumbnails/image/2016/06/14/09/Roundel_Underground_highres.jpg')
-    .setDescription(`${data1}: ${data2}\n\n${data0a}`)
+    .setDescription(`${data0b}`)
     .setTimestamp()
     .setFooter('The control room at Kensal Green', 'https://static.independent.co.uk/s3fs-public/thumbnails/image/2016/06/14/09/Roundel_Underground_highres.jpg');
   
@@ -526,7 +533,7 @@ client.on('message', msg => {
     setTimeout(function(){su = 0}, 3600000)
   }
   if (msg2.includes('no') && msg.author == process.env.X && su == 0) {
-    if (Math.random() > 0.5) {
+    if (Math.random() > 0.6) {
     msg.channel.send("Yes");
     }
   }
@@ -576,8 +583,16 @@ client.on('message', msg => {
   if (msg2.includes("launch") && !msg.author.bot) {
       Reply5(msg);
   }
-  if (msg2.includes("express") && !msg.author.bot) {
+  if (msg2.includes("~express") && !msg.author.bot) {
       Reply16(msg);
+  }
+  if (msg2.includes('express+') && !msg.author.bot){
+    item = msg.content.slice(msg2.indexOf('express+')+8,).trim()
+    item2 = item.slice(0,-1)
+    if (item.slice(-1) != '!'){reply = "Please end your headline with `!`. This helps me generate better headlines!"}
+    else if (item2.includes('!')){reply = "Please don't include `!` mid-headline - this will break my algorithm. Please use `‼` instead :)"}
+    else {reply = Exp.MarkovAdd(item).toString();}
+    msg.channel.send(reply);
   }
   if (msg2.includes('thank you') && !msg.author.bot) {
     num1 = Math.random();
@@ -609,11 +624,9 @@ client.on('message', msg => {
       {Url = 'https://www.bbc.co.uk/weather/' + postcode, Reply3(msg,Url,postcode)}
     else if(msg.author == process.env.X)
         {Place = 'Headingley', Url = 'https://www.bbc.co.uk/weather/6695619', Reply3(msg,Url,Place)}
-    else if(msg.author == process.env.M)
-        {Place = 'Swansea', Url = 'https://www.bbc.co.uk/weather/2636432', Reply3(msg,Url,Place)}
     else if(msg.author == process.env.W)
         {Place = 'Boston', Url = 'https://www.bbc.co.uk/weather/4930956', Reply3(msg,Url,Place)}
-    else {Place = 'South Kensington', Url = 'https://www.bbc.co.uk/weather/2637395', Reply3(msg,Url,Place)}
+    else {Place = 'Swansea', Url = 'https://www.bbc.co.uk/weather/2636432', Reply3(msg,Url,Place)}
   }
 
   if (msg2.includes('~forecast') && !msg.author.bot) {
@@ -624,11 +637,9 @@ client.on('message', msg => {
       {Url = 'https://www.bbc.co.uk/weather/' + postcode, Reply30(msg,Url,postcode)}
     else if(msg.author == process.env.X)
         {Place = 'Headingley', Url = 'https://www.bbc.co.uk/weather/6695619', Reply30(msg,Url,Place)}
-    else if(msg.author == process.env.M)
-        {Place = 'Swansea', Url = 'https://www.bbc.co.uk/weather/2636432', Reply30(msg,Url,Place)}
     else if(msg.author == process.env.W)
         {Place = 'Boston', Url = 'https://www.bbc.co.uk/weather/4930956', Reply30(msg,Url,Place)}
-    else {Place = 'South Kensington', Url = 'https://www.bbc.co.uk/weather/2637395', Reply30(msg,Url,Place)}
+    else {Place = 'Swansea', Url = 'https://www.bbc.co.uk/weather/2636432', Reply30(msg,Url,Place)}
   }
 
   if (msg2.includes('~nowcast')) {
@@ -689,6 +700,8 @@ client.on('message', msg => {
         {file = './mlist.txt', colour = '#55ff00', nom = "Matthew", file2 = './mlist2.txt'}
     if (msg.author == process.env.W)
         {file = './wlist.txt', colour = '#ffd050', nom = "Walter", file2 = './wlist2.txt'}
+    if (msg.author == process.env.R)
+        {file = './rlist.txt', colour = '#a0ff50', nom = "Rowan", file2 = './rlist2.txt'}
     if (msg2.includes('todo list') && !msg.author.bot){
       reply = List.listReturn(file, colour, nom);
       msg.channel.send(reply);
@@ -933,6 +946,7 @@ client.once('ready', async () => {
         List.listWipe(channel6, `./xlist2.txt`, `#00ccff`, `Matthew`, 1);
         List.listWipe(channel6, `./mlist2.txt`, `#ff0066`, `Matthew`, 2);
         List.listWipe(channel6, `./wlist2.txt`, `#ffd050`, `Walter`, 2);
+        List.listWipe(channel6, `./rlist2.txt`, `#a0ff50`, `Rowan`, 2);
       }
 
     }, 60 * 1000);
