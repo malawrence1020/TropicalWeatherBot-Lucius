@@ -12,19 +12,23 @@ module.exports = {
         // Quality Daily Express 'Headlines'
         markov.addStates(textByLine);
 
-        // Train the Markov Chain
-        markov.train(4);
+        // Train the Markov Chain: ~100 headlines required for markov.train(5)?
+        l = Math.round(4 + textByLine.length*Math.random()/100)
+        markov.train(l);
 
         // Generate an output
-        tweet = "ExpressBot: " + markov.generateRandom(200);
+        do {
+          tweet = "ExpressBot: " + markov.generateRandom(200)
+          console.log(tweet)
+        }
+        while (tweet.length > 140);
 
-        console.log(tweet)
         return tweet
     },
     
     
       MarkovAdd : function (item) {
-        fs.appendFile('./express.txt', `${item}\n`, function (err) {
+        fs.appendFile('./express.txt', `\n${item}`, function (err) {
                 if (err) {
                   console.log('failed')
                 } else {

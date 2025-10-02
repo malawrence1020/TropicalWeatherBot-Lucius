@@ -1,5 +1,7 @@
+//DO NOT upgrade discord.js beyond v12.5.3
 console.log('Hello, I am Lucius!')
 const Discord = require('discord.js');
+const { VoiceConnectionStatus, joinVoiceChannel, getVoiceConnection, createAudioPlayer, AudioPlayerStatus, createAudioResource, DiscordGatewayAdapterCreator} = require('@discordjs/voice');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -10,31 +12,32 @@ const fs = require('fs');
 var Veront = require('./veront.js')
 var List = require('./list.js')
 var Exp = require('./MarkovTweet16.js')
+var AF = require('./AF.js')
 
 su = 0
 fr = 0
 
 var lines = { 
-  bakerloo: ['Bakerloo Line','line-lul-bakerloo-','#b25f00'], 
-  central: ['Central Line','line-lul-central-','#dc2400'], 
-  circle: ['Circle Line','line-lul-circle-','#ffce00'],
-  district: ['District Line','line-lul-district-','#007229'],
-  hammersmith: ['Hammersmith & City Line','line-lul-hammersmith-city-','#f4a9be'],
-  jubilee: ['Jubilee Line','line-lul-jubilee-','#a1a5a7'],
-  metropolitan: ['Metropolitan Line','line-lul-metropolitan-','#9b0058'],
-  northern: ['Northern Line','line-lul-northern-','#000000'],
-  piccadilly: ['Piccadilly Line','line-lul-piccadilly-','#0019a8'],
-  victoria: ['Victoria Line','line-lul-victoria-','#00a0e2'],
-  waterloo: ['Waterloo & City Line','line-lul-waterloo-city-','#93ceba'],
-  dlr: ['DLR','line-dlr-dlr-','#00afad'],
-  lioness: ['Lioness Line','line-raillo-lioness-','#ef7b10'],
-  mildmay: ['Mildmay Line','line-raillo-mildmay-','#ef7b10'],
-  windrush: ['Windrush Line','line-raillo-windrush-','#ef7b10'],
-  weaver: ['Weaver Line','line-raillo-weaver-','#ef7b10'],
-  suffragette: ['Suffragette Line','line-raillo-suffragette-','#ef7b10'],
-  liberty: ['Liberty Line','line-raillo-liberty-','#ef7b10'],
-  tram: ['Tram','line-tram-tram-','#00bd19'],
-  elizabeth: ['Elizabeth Line','line-elizabeth-','#9364cc']}
+  bakerloo: ['Bakerloo Line','#b25f00'], 
+  central: ['Central Line','#dc2400'], 
+  circle: ['Circle Line','#ffce00'],
+  district: ['District Line','#007229'],
+  hammersmith: ['Hammersmith & City Line','#f4a9be'],
+  jubilee: ['Jubilee Line','#a1a5a7'],
+  metropolitan: ['Metropolitan Line','#9b0058'],
+  northern: ['Northern Line','#000000'],
+  piccadilly: ['Piccadilly Line','#0019a8'],
+  victoria: ['Victoria Line','#00a0e2'],
+  waterloo: ['Waterloo & City Line','#93ceba'],
+  dlr: ['DLR','#00afad'],
+  lioness: ['Lioness Line','#ffa600'],
+  mildmay: ['Mildmay Line','#006fe6'],
+  windrush: ['Windrush Line','#dc241f'],
+  weaver: ['Weaver Line','#9b0058'],
+  suffragette: ['Suffragette Line','#18a95d'],
+  liberty: ['Liberty Line','#61686b'],
+  tram: ['Tram','#00bd19'],
+  elizabeth: ['Elizabeth Line','#9364cc']}
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -238,12 +241,12 @@ function cheerioAP(channel, colour, basin, abb, abb2){
     .setColor(colour)
     .setTitle(U2)
     .setURL(`https://www.nhc.noaa.gov/cyclones/?` + abb)
-    .setAuthor(`Tropical Weather Bot: ` + basin + ` Update`, 'https://floridadep.gov/sites/default/files/styles/general_page_images__scaled_to_900_pixels_/public/media-folders/media-root/NOAA-color-logo-print.png')
+    .setAuthor(`Tropical Weather Bot: ` + basin + ` Update`, 'https://nauticalcharts.noaa.gov/images/noaa-logo-rgb-2022.png')
     .setDescription(U1)
     .attachFiles([`https://www.nhc.noaa.gov/archive/xgtwo/` + abb + `/latest/two_` + abb2 + `_7d0.png`])
     .setImage(`attachment://two_` + abb2 + `_7d0.png`)
     .setTimestamp()
-    .setFooter(`Tropical Weather Bot: ` + basin + ` Update`, 'https://floridadep.gov/sites/default/files/styles/general_page_images__scaled_to_900_pixels_/public/media-folders/media-root/NOAA-color-logo-print.png');
+    .setFooter(`Tropical Weather Bot: ` + basin + ` Update`, 'https://nauticalcharts.noaa.gov/images/noaa-logo-rgb-2022.png');
   
   channel.send(BasinEmbed);
       console.log(basin + ` Update`)
@@ -269,27 +272,30 @@ function cheerioBCD(channel, url1, name, colour, code1, code2, code3){
       .setColor(colour)
       .setTitle(TS1)
       .setURL(`https://www.nhc.noaa.gov/graphics_` + code1 + `.shtml`)
-      .setAuthor(`Tropical Weather Bot: ` + name + ` Update`, 'https://floridadep.gov/sites/default/files/styles/general_page_images__scaled_to_900_pixels_/public/media-folders/media-root/NOAA-color-logo-print.png')
+      .setAuthor(`Tropical Weather Bot: ` + name + ` Update`, 'https://nauticalcharts.noaa.gov/images/noaa-logo-rgb-2022.png')
       .setDescription(TS9 + "\n\n" + TS8)
       .attachFiles([`https://www.nhc.noaa.gov/storm_graphics/` + code2 + code3 + `_5day_cone_no_line_and_wind.png`])
       .setImage(`attachment://` + code3 + `_5day_cone_no_line_and_wind.png`)
       .setTimestamp()
-      .setFooter(`Tropical Weather Bot: ` + name + ` Update`, 'https://floridadep.gov/sites/default/files/styles/general_page_images__scaled_to_900_pixels_/public/media-folders/media-root/NOAA-color-logo-print.png');
+      .setFooter(`Tropical Weather Bot: ` + name + ` Update`, 'https://nauticalcharts.noaa.gov/images/noaa-logo-rgb-2022.png');
     
     channel.send(StormEmbed);
         console.log(name + ` Update`)
     });      
 }
 
-function cheerioJ(channel){
-  // WORK IN PROGRESS: 2025
-  url = `https://www.metoc.navy.mil/jtwc/products/wp1824web.txt`
-  //rp(url)
-    //.then(function(html) {
-    //  const $ = cheerio.load(html);
-    //  var TS0 = $.text();
-    channel.send('Work in progress! Check back later pls',{files: ['https://www.metoc.navy.mil/jtwc/products/wp1824.gif']});
-    //});      
+function cheerioWXYZ(channel, url1, name, colour){
+  url = `https://www.metoc.navy.mil/jtwc/products/` + url1
+      const StormEmbed = new Discord.MessageEmbed()
+      .setColor(colour)
+      .setAuthor(`JTWC: ${name} Update`, 'https://www.developmentaid.org/files/organizationLogos/joint-typhoon-warning-center-jtwc-429983.jpg')
+      .attachFiles([`https://www.metoc.navy.mil/jtwc/products/` + url1])
+      .setImage(`attachment://` + url1)
+      .setTimestamp()
+      .setFooter(`JTWC: ${name} Update`, 'https://www.developmentaid.org/files/organizationLogos/joint-typhoon-warning-center-jtwc-429983.jpg');
+    
+    channel.send(StormEmbed);
+        console.log(`${name} Update`)
 }
 
 function cheerioS(channel){
@@ -304,10 +310,10 @@ function cheerioS(channel){
       .setColor('#ffffff')
       .setTitle(TS1)
       .setURL(`https://www.swpc.noaa.gov/products/report-and-forecast-solar-and-geophysical-activity`)
-      .setAuthor(`Tropical Weather Bot: Space Update`, 'https://floridadep.gov/sites/default/files/styles/general_page_images__scaled_to_900_pixels_/public/media-folders/media-root/NOAA-color-logo-print.png')
+      .setAuthor(`Tropical Weather Bot: Space Update`, 'https://nauticalcharts.noaa.gov/images/noaa-logo-rgb-2022.png')
       .setDescription(TS2)
       .setTimestamp()
-      .setFooter(`Tropical Weather Bot: Space Update`, 'https://floridadep.gov/sites/default/files/styles/general_page_images__scaled_to_900_pixels_/public/media-folders/media-root/NOAA-color-logo-print.png');
+      .setFooter(`Tropical Weather Bot: Space Update`, 'https://nauticalcharts.noaa.gov/images/noaa-logo-rgb-2022.png');
     
     channel.send(SpaceEmbed);
         console.log(`Space Update`)
@@ -324,7 +330,7 @@ function overwrite(channel, bas, no, nam){
     bas2 = "AT";
     bas3 = "AL";
   }
-  if (bas == "p"){
+  if (bas == "ep"){
     bas1 = 'MIATCPEP';
     bas2 = "EP";
     bas3 = "EP";
@@ -351,6 +357,27 @@ function overwrite(channel, bas, no, nam){
   var mails1 = JSON.stringify(mails);
   fs.writeFileSync('./mails.json',mails1);
   cheerioBCD(channel, info1, nam, mails[kill][3], info2, info3, info4)
+  channel.send('I have overwritten slot ' + kill + ' with Storm ' + nam);
+}
+
+function overwriteW(channel, bas, no, nam){
+  var date = new Date();
+  var year = date.getFullYear().toString().slice(2);
+  var mails1 = fs.readFileSync('./mails.json')
+  var mails = JSON.parse(mails1);
+  if(no.length == 1){
+    no = "0" + no;
+  }
+  nam = nam[0].toUpperCase() + nam.substring(1)
+  info1 = bas + no + year + '.gif'
+  if (mails.x[0] == false) {kill = "x"}
+  else if (mails.y[0] == false) {kill = "y"}
+  else if (mails.z[0] == false) {kill = "z"}
+  else {channel.send('I can only remember 3 systems at once!'); return}
+  mails[kill] = [true, info1, nam, mails[kill][3]];
+  var mails1 = JSON.stringify(mails);
+  fs.writeFileSync('./mails.json',mails1);
+  cheerioWXYZ(channel, info1, nam, mails[kill][3])
   channel.send('I have overwritten slot ' + kill + ' with Storm ' + nam);
 }
 
@@ -426,26 +453,93 @@ function cheerioM(channel,tim) {
 }
 
 function tubeStatus(channel, line) {
+  //Cheerio is unable to wait for async content to load, so reading this data is impossible without moving to a meatier web crawler than Cheerio, e.g. Selenium, or working with the API
   rp('https://tfl.gov.uk/tube-dlr-overground/status')
-  .then(function(html) {
-    const $ = cheerio.load('.rainbow-list');
-    //var data0 = $('.number-link', html).eq(0).text().replace(/\n/g, " ").replace(/\s\s+/g, " ");
-    var data0 = $(`#${lines[line][1]}content`, html).text().replace(/\n/g, " ");
-    var data1 = $(`.${line} .service-name`, html).text().replace(/\n/g, " ");
-    var data2 = $(`.${line} .disruption-summary`, html).text().replace(/\n/g, " ");
-    var data0a = data0.slice(0,data0.indexOf("Replan your journey"));
-    if (data1){var data0b = `${data1}: ${data2}\n\n${data0a}`}
-    else {var data0b = `${lines[line][0]}: No data. [Check TfL Website](https://tfl.gov.uk/tube-dlr-overground/status/)`}
+    .then(function(html) {
+    const $test = cheerio.load(html);
+    //var data0 = $(`#${lines[line][1]}content`, html).text().replace(/\n/g, " ");
+    //var data1 = $(`.${line} .service-name`, html).text().replace(/\n/g, " ");
+    //var data2 = $(`.${line} .disruption-summary`, html).text().replace(/\n/g, " ");
+    //var data0a = data0.slice(0,data0.indexOf("Replan your journey"));
+    //if (data1){var data0b = `${data1}: ${data2}\n\n${data0a}`}
+    var test1 = $test(`div.Home_contentSection__cDUQW`, html).eq(1).text();
+    var data0 = $test(`.CustomAccordion_tflAccordion__nlP1Q .${line}`, html).text().replace(/\n/g, " ");
+    if (data0){var data0b = `${data0}`}
+    else {var data0b = `Unfortunately I am no longer able to read this website. :( \n [Check TfL Website](https://tfl.gov.uk/tube-dlr-overground/status/)`}
     const TubeEmbed = new Discord.MessageEmbed()
-    .setColor(`${lines[line][2]}`)
+    .setColor(`${lines[line][1]}`)
     .setAuthor(`Lucius: ${lines[line][0]} Update`, 'https://static.independent.co.uk/s3fs-public/thumbnails/image/2016/06/14/09/Roundel_Underground_highres.jpg')
     .setDescription(`${data0b}`)
     .setTimestamp()
-    .setFooter('The control room at Kensal Green', 'https://static.independent.co.uk/s3fs-public/thumbnails/image/2016/06/14/09/Roundel_Underground_highres.jpg');
+    .setFooter('The control room at Turnham Green', 'https://static.independent.co.uk/s3fs-public/thumbnails/image/2016/06/14/09/Roundel_Underground_highres.jpg');
   
     channel.send(TubeEmbed);
+    console.log(test1);
     console.log(`${lines[line][0]} Update`);
   });
+}
+
+function NationalGrid(channel) {
+  colours = ['#ee9944','#eedd00','#99dd55','#22ccbb','#0099cc','#3366bb']
+  rp('https://grid.iamkate.com/')
+    .then(function(html) {
+    const $ = cheerio.load('#latest');
+    var dump = [];
+    var headings = [];
+    dump[0] = $(`#fossils h2`, html).text();
+    dump[1] = $(`#renewables h2`, html).text();
+    dump[2] = $(`#others h2`, html).text();
+    dump[3] = $(`#transfers h2`, html).text();
+    dump[4] = $(`#storage h2`, html).text();
+    for (i in dump) {
+      headings[2*i] = dump[i].slice(dump[i].indexOf('%')+2,dump[i].indexOf('%')+3).toUpperCase() + dump[i].slice(dump[i].indexOf('%')+3);
+      headings[2*i+1] = dump[i].slice(0,dump[i].indexOf('%')+1);
+    }
+    var data1 = [];
+    var data2 = [];
+    var data3 = [];
+    var percents = [];
+    for (let i = 0; i < 14; i++) {
+      var table1 = $(`td`,html).eq(4*i+1).text() + ` ` + $(`td`,html).eq(4*i+2).text() + ` GW ` + $(`td`,html).eq(4*i+3).text() + `%`;
+      data1.push($(`td`,html).eq(4*i+1).text());
+      data2.push($(`td`,html).eq(4*i+2).text() + ` GW `);
+      data3.push($(`td`,html).eq(4*i+3).text() + `%`);
+      percents.push(Number($(`td`,html).eq(4*i+3).text()));
+    }
+    percents = percents.slice(0,6);
+    max = percents.indexOf(Math.max(...percents));
+    const NGEmbed = new Discord.MessageEmbed()
+    .setColor(`${colours[max]}`)
+    .setURL('https://grid.iamkate.com/')
+    .setTitle(`National Grid Live Update`)
+    .addFields(
+        {name: `${headings[0]}`, value: `${data1.slice(0,1).join('\n')}`, inline: true},
+        {name: `${headings[1]}`, value: `${data2.slice(0,1).join('\n')}`, inline: true},
+        {name: '\u200b', value: `${data3.slice(0,1).join('\n')}`, inline: true},
+        {name: `${headings[2]}`, value: `${data1.slice(1,4).join('\n')}`, inline: true},
+        {name: `${headings[3]}`, value: `${data2.slice(1,4).join('\n')}`, inline: true},
+        {name: '\u200b', value: `${data3.slice(1,4).join('\n')}`, inline: true},
+        {name: `${headings[4]}`, value: `${data1.slice(4,6).join('\n')}`, inline: true},
+        {name: `${headings[5]}`, value: `${data2.slice(4,6).join('\n')}`, inline: true},
+        {name: '\u200b', value: `${data3.slice(4,6).join('\n')}`, inline: true},
+        {name: `${headings[6]}`, value: `${data1.slice(6,12).join('\n')}`, inline: true},
+        {name: `${headings[7]}`, value: `${data2.slice(6,12).join('\n')}`, inline: true},
+        {name: '\u200b', value: `${data3.slice(6,12).join('\n')}`, inline: true},
+        {name: `${headings[8]}`, value: `${data1.slice(12,14).join('\n')}`, inline: true},
+        {name: `${headings[9]}`, value: `${data2.slice(12,14).join('\n')}`, inline: true},
+        {name: '\u200b', value: `${data3.slice(12,14).join('\n')}`, inline: true},
+    )
+    .setTimestamp()
+    .setFooter('grid.iamkate.com: Live update', 'https://grid.iamkate.com/favicon.png');
+  
+    channel.send(NGEmbed);
+    console.log(`National Grid Update`);
+  });
+}
+
+function Reply16(msg){
+  var response = Exp.MarkovExp().toString()
+  msg.channel.send(response)
 }
 
 function FileSort(dir, message){
@@ -461,17 +555,18 @@ function FileSort(dir, message){
   else {FileSort(dir, message);}
 }
 
-function Reply16(msg){
-
-  var response = Exp.MarkovExp().toString()
-  msg.channel.send(response)
-}
-
 async function Music(dir, file, message, z){
   if (message.member.voice.channel) {
     const connection = await message.member.voice.channel.join();
+    //const connection = getVoiceConnection(message.member.voice.channel);
+		//const connection = await connectToChannel(message.member.voice.channel);
+    //const subscription = connection.subscribe(audioPlayer);
     // Create a dispatcher
     const dispatcher = connection.play(dir + file + '.mp3');
+    //const player = createAudioPlayer();
+    //const resource = createAudioResource(dir + file + '.mp3');
+    //player.play(resource);
+    //connection.subscribe(player);
 
     dispatcher.on('start', () => {
       console.log(file + ' is now playing!');
@@ -481,7 +576,9 @@ async function Music(dir, file, message, z){
     dispatcher.on('finish', () => {
       console.log(file + ' has finished playing!');
       if (z == 1){FileSort(dir, message)}
-      else{client.user.setPresence({ activity: { name: 'The Weather', type: 'WATCHING' }, status: 'idle' });}
+      else {
+        client.user.setPresence({ activity: { name: 'The Weather', type: 'WATCHING' }, status: 'idle' });
+        dispatcher.destroy();}
     });
 
     // Always remember to handle errors appropriately!
@@ -489,13 +586,28 @@ async function Music(dir, file, message, z){
   }
 }
 
+async function connectToChannel(channel) {
+	const connection = joinVoiceChannel({
+		channelId: channel.id,
+		guildId: channel.guild.id,
+		adapterCreator: channel.guild.voiceAdapterCreator,
+	});
+
+	try {
+		await entersState(connection, VoiceConnectionStatus.Ready, 30_000);
+		return connection;
+	} catch (error) {
+		connection.destroy();
+		throw error;
+	}
+}
+
 
 const client = new Discord.Client();
 client.once('ready', () => {
   client.user.setPresence({ activity: { name: 'The Weather', type: 'WATCHING' }, status: 'idle' });
+  //client.user.setPresence({ activity: { name: `${client.guilds.cache.size} servers`, type: 'WATCHING' }, status: 'idle' });
 	console.log('Ready!');
-  //const channel5 = client.channels.cache.get(process.env.CH5);
-  //channel5.send(`<@${process.env.V}> Good luck 😊`);
 });
 
 client.on('message', msg => {
@@ -517,7 +629,7 @@ client.on('message', msg => {
   }
   if (msg2.includes('spam')) {
     msg.channel.send({
-      files: ['./Images/Spam.jpg'],
+      files: ['./images/Spam.jpg'],
     });
   }
   if (msg2.includes('go away') && !msg.author.bot) {
@@ -528,12 +640,12 @@ client.on('message', msg => {
   }
   if (msg2.includes('shut up')){
     console.log('Shutting Up');
-    msg.channel.send({files: ['./Images/Pikachu.png']});
+    msg.channel.send({files: ['./images/Pikachu.png']});
     su = 1;
     setTimeout(function(){su = 0}, 3600000)
   }
-  if (msg2.includes('no') && msg.author == process.env.X && su == 0) {
-    if (Math.random() > 0.6) {
+  if (msg2.includes(' no ') && msg.author == process.env.X && su == 0) {
+    if (Math.random() > 0.3) {
     msg.channel.send("Yes");
     }
   }
@@ -549,7 +661,7 @@ client.on('message', msg => {
     msg.channel.send('Yes 😊');
   }
   if ((msg2.includes('sin x') || msg2.includes('sin(x)')) && su == 0) {
-    msg.channel.send({files: ['./Images/latex.png']});
+    msg.channel.send({files: ['./images/latex.png']});
   }
   if (msg2.includes('mercusa') && !msg.author.bot) {
     if (msg2.includes('motorway')) {
@@ -560,13 +672,13 @@ client.on('message', msg => {
     }
   }
   if (msg2.includes('aeran map')) {
-    msg.channel.send({files: ['./Images/Aeran Map.jpg']});
+    msg.channel.send({files: ['./images/Aeran Map.jpg']});
   }
   if (msg2.includes('!wave') && !msg.author.bot) {
       msg.channel.send('https://www.reddit.com/r/vexillologycirclejerk/comments/sg0pz6/flag_of_how_is_this_not_a_parody/');
   }
   if (msg2.includes(':its-cheap:') && !msg.author.bot) {
-    msg.channel.send({files: ["./Images/It's cheap.mp4"]});
+    msg.channel.send({files: ["./images/It's cheap.mp4"]});
   }
   if (msg2.includes('i love you') && !msg.author.bot) {
       msg.channel.send(`I love you too ${msg.author.username} ❤️`);
@@ -615,11 +727,29 @@ client.on('message', msg => {
       else if (num2 < 0.5) {msg.channel.send(`You're welcome! ${emote}`);}
     }
   }
+  if (msg.guild) {
+    if (msg.guild.id === process.env.SERVER) {
+      if ((msg2.includes('1-up')|| msg2.includes('1up')) && !msg2.includes(':1up:')) {
+        msg.react('<:1up:1416168669997957214>');
+      }
+      if ((msg2.includes('power') && msg2.includes('up')) || msg2.includes('mario') && !msg2.includes(':1up:')) {
+        msg.react('<:mario:1416168905415856148>');
+      }
+      //if (msg.embeds[0]) {if (msg.embeds[0].title.includes('Mario')) { //embeds is a weird object - I haven't worked this one out yet for single images
+      //  msg.react('<:mario:1416168905415856148>');
+      //}}
+      if ((msg2.includes('giant')|| msg2.includes('mega')) && !msg2.includes(':megamario:')) {
+        msg.react('<:megamario:1416168910176387172>');
+      }
+    }
+  }
 
   if (msg2.includes('~weather') && !msg.author.bot) {
     postcode = msg2.slice(msg2.indexOf('~weather')+9,);
     if (postcode == "anlight" || postcode == "deliac" || postcode == "larion" || postcode == "torvalain" || postcode == "veront")
       {msg.channel.send(Veront.Veather(postcode,0))}
+    //else if (postcode == "somerville" || postcode == "boston")
+    //  {Url = 'https://www.wunderground.com/dashboard/pws/KMASOMER158', Reply3(msg,Url,postcode)} Impossible without working with the API
     else if (postcode)
       {Url = 'https://www.bbc.co.uk/weather/' + postcode, Reply3(msg,Url,postcode)}
     else if(msg.author == process.env.X)
@@ -759,44 +889,61 @@ client.on('message', msg => {
     tim = msg2.slice(msg2.indexOf('~twb')+4,);
     if (tim){Veront.Xeather(msg.channel,tim)}
     else {Veront.Xeather(msg.channel,0)}
+    //msg.channel.send('This function is currently broken - please try again later')
   }
   if (msg2.includes('~twc') && !msg.author.bot) {
     tim = msg2.slice(msg2.indexOf('~twc')+4,);
     if (tim){Veront.Zeather(msg.channel,tim)}
     else {Veront.Zeather(msg.channel,0)}
+    //msg.channel.send('This function is currently broken - please try again later')
+  }
+  if (msg2.includes('~twd') && !msg.author.bot) {
+    tim = msg2.slice(msg2.indexOf('~twd')+4,);
+    if (tim){Veront.Feather(msg.channel,tim)}
+    else {Veront.Feather(msg.channel,0)}
+    //msg.channel.send('This function is currently broken - please try again later')
   }
   if (msg2.includes('~disable')){
     kill = msg2.slice(msg2.indexOf('~disable')+9,);
+    if (kill == "io") {kill = "wp"}
+    if (kill == "p") {msg.channel.send('Remember: East Pacific is now "ep"')}
     var mails1 = fs.readFileSync('./mails.json')
     var mails = JSON.parse(mails1);
+    if (mails[kill]) {
     mails[kill][0] = false;
     msg.channel.send(`Disabled ${mails[kill][2]}`);
     console.log(mails);
     var mails1 = JSON.stringify(mails);
     fs.writeFileSync('./mails.json',mails1);
+    }
   }
   if (msg2.includes('~enable')){
     kill = msg2.slice(msg2.indexOf('~enable')+8,);
+    if (kill == "io") {kill = "wp"}
+    if (kill == "p") {msg.channel.send('Remember: East Pacific is now "ep"')}
     var mails1 = fs.readFileSync('./mails.json')
     var mails = JSON.parse(mails1);
+    if (mails[kill]) {
     mails[kill][0] = true;
     msg.channel.send(`Enabled ${mails[kill][2]}`);
     console.log(mails);
     var mails1 = JSON.stringify(mails);
     fs.writeFileSync('./mails.json',mails1);
+    }
   }
   if (msg2.includes('~req')){
     kill = msg2.slice(msg2.indexOf('~req')+5,);
     var mails1 = fs.readFileSync('./mails.json')
     var mails = JSON.parse(mails1);
-    if (kill == "a" || kill == "p" || kill == "cp") {
+    if (kill == "a" || kill == "ep" || kill == "cp") {
       cheerioAP(msg.channel, mails[kill][1], mails[kill][2], mails[kill][3], mails[kill][4]);
     }
     if (kill == "b" || kill == "c" || kill == "d") {
       cheerioBCD(msg.channel, mails[kill][1], mails[kill][2], mails[kill][3], mails[kill][4], mails[kill][5], mails[kill][6]);
     }
-    if (kill == "w") {
-      cheerioJ(msg.channel);
+    if (kill == "io") {kill = "wp"}
+    if (kill == "wp" || kill == "x" || kill == "y" || kill == "z") {
+      cheerioWXYZ(msg.channel, mails[kill][1], mails[kill][2], mails[kill][3])
     }
     if (kill == "all") {
       mailmsg = ("```json\n"
@@ -806,13 +953,36 @@ client.on('message', msg => {
     }
   }
   if (msg2.includes('~overwrite')){
-    crop = msg2.slice(msg2.indexOf('~req')+11,).trim();
+    crop = msg2.slice(msg2.indexOf('~overwrite')+11,).trim();
     crop2 = crop.slice(crop.indexOf(' ')+1,).trim();
     bas = crop.slice(0,crop.indexOf(' ')).trim();
     no = crop2.slice(0,crop2.indexOf(' ')).trim();
     nam = crop2.slice(crop2.indexOf(' ')+1,).trim();
-    if (bas == "a" || bas == "p" || bas == "cp") {
+    if (bas == "a" || bas == "ep" || bas == "cp") {
       overwrite(msg.channel, bas, no, nam);
+    }
+    if (bas == "wp" || bas == "io") {
+      overwriteW(msg.channel, bas, no, nam);
+    }
+  }
+
+  if (msg2.includes('~season')){
+    var date = new Date();
+    crop = msg2.slice(msg2.indexOf('~season')+8,).trim();
+    year = crop.slice(crop.indexOf(' ')+1,).trim();
+    bas = crop.slice(0,crop.indexOf(' ')).trim();
+    if (bas == "a") {bas2 = 'atl'}
+    else if (bas == "ep") {bas2 = 'epac'}
+    else if (bas == "cp") {bas2 = 'cpac'}
+    else {msg.channel.send("I don't recognise that basin :confused:") 
+      bas2 = 0}
+    if (bas2) {
+      if (year >= 1991 && year <= date.getFullYear()) {
+        pic = `https://www.nhc.noaa.gov/data/tcr/track_maps/`+ bas2 + `_season_`+ year + `.png`
+        msg.channel.send({files: [pic],});
+      }
+      else {msg.channel.send('I can only retrieve season maps for 1991-2025')}
+      console.log(year)
     }
   }
 
@@ -836,6 +1006,14 @@ client.on('message', msg => {
     if (lines[line]) {tubeStatus(msg.channel, line)};
   }
 
+  if (msg2.includes('~grid') || msg2.includes('~nationalgrid')) {
+    NationalGrid(msg.channel);
+  }
+
+  if (msg2.includes('~french') || msg2.includes('~af')) {
+    AF.Quotidien(msg.channel)
+  }
+
   if (msg2.includes('///') && !msg.author.bot) {
     if (msg2.includes('///contest') && !msg.author.bot) {
       data = msg2.split(' ');
@@ -852,7 +1030,7 @@ client.on('message', msg => {
   }
   if (msg2.includes('happy birthday') && !msg.author.bot) {
     date = new Date();
-    if (date.getMonth() === 4 && date.getDate() === 20) {
+    if (date.getMonth() === 5 && date.getDate() === 20) {
       msg.react(`🥳`);
       sleep(2000).then( () => {
       msg.channel.send('_Happy birthday to me_ 🎵');
@@ -923,8 +1101,9 @@ client.once('ready', async () => {
         var mails1 = fs.readFileSync('./mails.json')
         var mails = JSON.parse(mails1);
         if (mails.a[0] == true) {cheerioAP(channel, mails.a[1], mails.a[2], mails.a[3], mails.a[4]);}
-        if (mails.p[0] == true) {cheerioAP(channel, mails.p[1], mails.p[2], mails.p[3], mails.p[4]);}
+        if (mails.ep[0] == true) {cheerioAP(channel, mails.ep[1], mails.ep[2], mails.ep[3], mails.ep[4]);}
         if (mails.cp[0] == true) {cheerioAP(channel, mails.cp[1], mails.cp[2], mails.cp[3], mails.cp[4]);}
+        if (mails.wp[0] == true) {cheerioWXYZ(channel, mails.wp[1], mails.wp[2]);}
       }
 
       if ((date.getUTCHours() === 3 || date.getUTCHours() === 9 || date.getUTCHours() === 15 || date.getUTCHours() === 21) && date.getMinutes() === 0){
@@ -933,12 +1112,16 @@ client.once('ready', async () => {
         if (mails.b[0] == true) {cheerioBCD(channel, mails.b[1], mails.b[2], mails.b[3], mails.b[4], mails.b[5], mails.b[6]);}
         if (mails.c[0] == true) {cheerioBCD(channel, mails.c[1], mails.c[2], mails.c[3], mails.c[4], mails.c[5], mails.c[6]);}
         if (mails.d[0] == true) {cheerioBCD(channel, mails.d[1], mails.d[2], mails.d[3], mails.d[4], mails.d[5], mails.d[6]);}
+        if (mails.x[0] == true) {cheerioWXYZ(channel, mails.x[1], mails.x[2]);}
+        if (mails.y[0] == true) {cheerioWXYZ(channel, mails.y[1], mails.y[2]);}
+        if (mails.z[0] == true) {cheerioWXYZ(channel, mails.z[1], mails.z[2]);}
       }
 
       if ((date.getUTCHours() === 7) && date.getMinutes() === 0){
         cheerioW(channel);
         Veront.Xeather(channel,0);
         Veront.Zeather(channel,0);
+        Veront.Feather(channel,0);
         //cheerioM(channel, 0);
       }
 
@@ -947,6 +1130,10 @@ client.once('ready', async () => {
         List.listWipe(channel6, `./mlist2.txt`, `#ff0066`, `Matthew`, 2);
         List.listWipe(channel6, `./wlist2.txt`, `#ffd050`, `Walter`, 2);
         List.listWipe(channel6, `./rlist2.txt`, `#a0ff50`, `Rowan`, 2);
+      }
+
+      if ((date.getDay() === 0 || date.getDay() === 1 || date.getDay() === 2) && date.getUTCHours() === 8 && date.getMinutes() === 0){
+        AF.Quotidien(channel6)
       }
 
     }, 60 * 1000);
@@ -958,3 +1145,7 @@ client.once('ready', async () => {
 
 // login to Discord with your app's token
 client.login(process.env.TOKEN);
+
+process.on('warning', (warning) => {
+  console.log(warning.stack);
+});
